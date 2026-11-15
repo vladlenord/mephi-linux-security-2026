@@ -1,0 +1,69 @@
+whoami
+sudo whoami
+~mkdir -p ~/mephi-linux-security-2026
+mkdir -p ~/mephi-linux-security-2026
+cd ~/mephi-linux-security-2026
+sudo groupadd students
+sudo useradd -m -u 1234 -g students -s /bin/bash user1
+sodi passwd user1
+sudo passwd user1
+sudo chage -M 90 user1
+id user1
+sudo chage -l user1
+stat /home/user1
+sudo passwd user1
+sudo passwd -S user1
+sudo chage -l user1
+sudo find / -type f -perm -4000 -print 2>/dev/null | tee ~/mephi-linux-security-2026/suid-files.out
+ps -eo pid,ruid,euid,user,comm | awk 'NR==1 || ($3==0 && $2>=1000 && $2!=65534)' | tee ~/mephi-linux-security-2026/privileged-processes.out
+ls -lh ~/mephi-linux-security-2026/*.out
+echo "MEPHI SETUID TEST SUCCESS" | sudo tee /root/mephi-setuid-test.txt
+sudo chmod 600 /root/mephi-setuid-test.txt
+cp /usr/bin/cat ~/mephi-linux-security-2026/cat-suid
+sudo chown root:root ~/mephi-linux-security-2026/cat-suid
+sudo chmod 4755 ~/mephi-linux-security-2026/cat-suid
+ls -l ~/mephi-linux-security-2026/cat-suid
+sudo -u user1 cat /root/mephi-setuid-test.txt
+sudo -u user1 ~/mephi-linux-security-2026/cat-suid /root/mephi-setuid-test.txt
+sudo mkdir -p /opt/mephi-lab
+sudo cp ~/mephi-linux-security-2026/cat-suid /opt/mephi-lab/cat-suid
+sudo chown root:root /opt/mephi-lab/cat-suid
+sudo chmod 4755 /opt/mephi-lab/cat-suid
+ls -l /opt/mephi-lab/cat-suid
+sudo -u user1 /opt/mephi-lab/cat-suid /root/mephi-setuid-test.txt
+echo "MEPHI SETUID TEST SUCCESS" | sudo tee /opt/mephi-lab/secret.txt
+sudo chown root:root /opt/mephi-lab/secret.txt
+sudo chmod 600 /opt/mephi-lab/secret.txt
+sudo -u user1 /usr/bin/cat /opt/mephi-lab/secret.txt
+sudo -u user1 /opt/mephi-lab/cat-suid /opt/mephi-lab/secret.txt
+stat /opt/mephi-lab/cat-suid | tee -a ~/mephi-linux-security-2026/stat.out
+sudo -u user1 /opt/mephi-lab/cat-suid /root/mephi-setuid-test.txt | tee ~/mephi-linux-security-2026/setuid-result.out
+sudo mkdir -p /opt/mephi-lab
+sudo cp /usr/bin/chown /opt/mephi-lab/chown-cap
+sudo chown root:root /opt/mephi-lab/chown-cap
+sudo chmod 755 /opt/mephi-lab/chown-cap
+sudo setcap cap_chown+ep /opt/mephi-lab/chown-cap
+getcap /opt/mephi-lab/chown-cap
+sudo touch /opt/mephi-lab/chown-test.txt
+sudo chown user1:students /opt/mephi-lab/chown-test.txt
+sudo chmod 644 /opt/mephi-lab/chown-test.txt
+sudo -u user1 /usr/bin/chown root:root /opt/mephi-lab/chown-test.txt
+sudo -u user1 /opt/mephi-lab/chown-cap root:root /opt/mephi-lab/chown-test.txt
+ls -l /opt/mephi-lab/chown-test.txt
+getcap /opt/mephi-lab/chown-cap | tee ~/mephi-linux-security-2026/getcap.out
+stat /opt/mephi-lab/chown-cap | tee -a ~/mephi-linux-security-2026/stat.out
+ls -l /opt/mephi-lab/chown-test.txt | tee ~/mephi-linux-security-2026/capabilities-result.out
+command -v date
+sudo visudo -f /etc/sudoers.d/mephi-user1
+sudo visudo -c
+sudo -l -U user1
+sudo chmod 440 /etc/sudoers.d/mephi-user1
+sudo visudo -c
+sudo -u user1 sudo -l
+sudo -u user1 sudo /usr/bin/date -s "$(date '+%Y-%m-%d %H:%M:%S')"
+sudo -l -U user1 > ~/mephi-linux-security-2026/sudo-result.out
+stat /home/user1 >> ~/mephi-linux-security-2026/stat.out
+sudo -l -U user1 > ~/mephi-linux-security-2026/sudo-result.out
+stat /home/user1 >> ~/mephi-linux-security-2026/stat.out
+history -E 1 > ~/mephi-linux-security-2026/history.out
+wc -l ~/mephi-linux-security-2026/history.out

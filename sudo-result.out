@@ -1,0 +1,8 @@
+Matching Defaults entries for user1 on kali:
+    secure_path=/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+Runas and Command-specific defaults for user1:
+    Defaults!/usr/sbin/visudo env_keep+="SUDO_EDITOR EDITOR VISUAL"
+
+User user1 may run the following commands on kali:
+    (root) /usr/bin/date -s *
